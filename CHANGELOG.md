@@ -1,5 +1,43 @@
 # Changelog
 
+## [21.1.0](https://github.com/ydb-platform/ydb-embedded-ui/compare/v21.0.0...v21.1.0) (2026-09-10)
+
+
+### Features
+
+* add a stable healthcheck drawer extension ([#4324](https://github.com/ydb-platform/ydb-embedded-ui/issues/4324)) ([7e95f0d](https://github.com/ydb-platform/ydb-embedded-ui/commit/7e95f0d17d29833bd96804026a94a9009ad4f385))
+* enable query editor tabs by default ([#4320](https://github.com/ydb-platform/ydb-embedded-ui/issues/4320)) ([be85fd5](https://github.com/ydb-platform/ydb-embedded-ui/commit/be85fd579b50731e2b70fc631f1df03e3a410205))
+
+
+### Bug Fixes
+
+* align critical action confirmation dialogs ([#4306](https://github.com/ydb-platform/ydb-embedded-ui/issues/4306)) ([766531e](https://github.com/ydb-platform/ydb-embedded-ui/commit/766531ee7f86da034b77b89ad35b7ff597edb9e0))
+* **Header:** show loading for link to shared DB ([#4316](https://github.com/ydb-platform/ydb-embedded-ui/issues/4316)) ([bb0952a](https://github.com/ydb-platform/ydb-embedded-ui/commit/bb0952a77cfa8d0ff28c70503af9dc35a0a650e8))
+* prevent pdisk popups from opening without selection ([#4330](https://github.com/ydb-platform/ydb-embedded-ui/issues/4330)) ([fec1403](https://github.com/ydb-platform/ydb-embedded-ui/commit/fec1403fd02123257e26c27c1dbcba2ba516645c))
+
+## [21.0.0](https://github.com/ydb-platform/ydb-embedded-ui/compare/v20.5.0...v21.0.0) (2026-09-07)
+
+
+### ⚠ BREAKING CHANGES
+
+* **graph:** use new library with web workers ([#4253](https://github.com/ydb-platform/ydb-embedded-ui/issues/4253))
+
+### Features
+
+* **graph:** use new library with web workers ([#4253](https://github.com/ydb-platform/ydb-embedded-ui/issues/4253)) ([c88d663](https://github.com/ydb-platform/ydb-embedded-ui/commit/c88d6632674afb41eec2ff0018b862dc75e7238a))
+
+## [20.5.0](https://github.com/ydb-platform/ydb-embedded-ui/compare/v20.4.0...v20.5.0) (2026-09-03)
+
+
+### Features
+
+* **TopicInfo:** show topic autopartitioning settings ([#4284](https://github.com/ydb-platform/ydb-embedded-ui/issues/4284)) ([0610f0f](https://github.com/ydb-platform/ydb-embedded-ui/commit/0610f0f5fd9e3c90df95900f46ff89a67e47d879))
+
+
+### Bug Fixes
+
+* if no cluster name redirect to root ([#4301](https://github.com/ydb-platform/ydb-embedded-ui/issues/4301)) ([7319000](https://github.com/ydb-platform/ydb-embedded-ui/commit/7319000950012ee3b4c7f4e64ae2d4addb0d901d))
+
 ## [20.4.0](https://github.com/ydb-platform/ydb-embedded-ui/compare/v20.3.0...v20.4.0) (2026-09-02)
 
 
