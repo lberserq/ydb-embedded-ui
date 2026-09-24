@@ -4,6 +4,7 @@ import {ArrowRotateLeft, StopFill, TriangleRightFill} from '@gravity-ui/icons';
 import {Flex, Icon} from '@gravity-ui/uikit';
 
 import {ButtonWithConfirmDialog} from '../../../../components/ButtonWithConfirmDialog/ButtonWithConfirmDialog';
+import {useTabletDevUiSecurePath} from '../../../../store/reducers/capabilities/hooks';
 import {tabletApi} from '../../../../store/reducers/tablet';
 import {ETabletState} from '../../../../types/api/tablet';
 import type {TTabletStateInfo} from '../../../../types/api/tablet';
@@ -19,6 +20,7 @@ export const TabletControls = ({tablet}: TabletControlsProps) => {
     const {TabletId, HiveId} = tablet;
 
     const isUserAllowedToMakeChanges = useIsUserAllowedToMakeChanges();
+    const useSecurePath = useTabletDevUiSecurePath();
 
     const [killTablet] = tabletApi.useKillTabletMutation();
     const [stopTablet] = tabletApi.useStopTabletMutation();
@@ -39,10 +41,12 @@ export const TabletControls = ({tablet}: TabletControlsProps) => {
         tablet.State === ETabletState.Stopped || tablet.State === ETabletState.Deleted;
 
     return (
-        <Flex gap={2} wrap="nowrap">
+        <Flex gap={2} wrap="nowrap" qa="tablet-controls">
             <ButtonWithConfirmDialog
                 dialogHeader={i18n('dialog.kill-header')}
-                dialogWarning={i18n('dialog.kill-text')}
+                dialogText={i18n('dialog.kill-text')}
+                applyButtonText={i18n('dialog.kill-header')}
+                applyButtonView="action"
                 onConfirmAction={() => killTablet({id: TabletId}).unwrap()}
                 buttonDisabled={isDisabledRestart || !isUserAllowedToMakeChanges}
                 withPopover
@@ -59,7 +63,11 @@ export const TabletControls = ({tablet}: TabletControlsProps) => {
                     <ButtonWithConfirmDialog
                         dialogHeader={i18n('dialog.stop-header')}
                         dialogText={i18n('dialog.stop-text')}
-                        onConfirmAction={() => stopTablet({id: TabletId, hiveId: HiveId}).unwrap()}
+                        applyButtonText={i18n('dialog.stop-header')}
+                        applyButtonView="outlined-danger"
+                        onConfirmAction={() =>
+                            stopTablet({id: TabletId, hiveId: HiveId, useSecurePath}).unwrap()
+                        }
                         buttonDisabled={isDisabledStop || !isUserAllowedToMakeChanges}
                         withPopover
                         buttonView="normal"
@@ -73,8 +81,10 @@ export const TabletControls = ({tablet}: TabletControlsProps) => {
                     <ButtonWithConfirmDialog
                         dialogHeader={i18n('dialog.resume-header')}
                         dialogText={i18n('dialog.resume-text')}
+                        applyButtonText={i18n('dialog.resume-header')}
+                        applyButtonView="action"
                         onConfirmAction={() =>
-                            resumeTablet({id: TabletId, hiveId: HiveId}).unwrap()
+                            resumeTablet({id: TabletId, hiveId: HiveId, useSecurePath}).unwrap()
                         }
                         buttonDisabled={isDisabledResume || !isUserAllowedToMakeChanges}
                         withPopover

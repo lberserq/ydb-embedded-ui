@@ -1,16 +1,17 @@
 import React from 'react';
 
+import {useHistory} from 'react-router-dom';
+
 import {LoaderWrapper} from '../../../components/LoaderWrapper/LoaderWrapper';
 import type {RenderErrorMessage} from '../../../components/PaginatedTable';
 import {PAGINATED_TABLE_IDS, ResizeablePaginatedTable} from '../../../components/PaginatedTable';
-import {
-    useCapabilitiesLoaded,
-    useStorageGroupsHandlerAvailable,
-} from '../../../store/reducers/capabilities/hooks';
+import {useStorageGroupPath} from '../../../routes';
+import {useCapabilitiesLoaded} from '../../../store/reducers/capabilities/hooks';
 import {VISIBLE_ENTITIES} from '../../../store/reducers/storage/constants';
 import type {VisibleEntities} from '../../../store/reducers/storage/types';
 import type {GroupsGroupByField} from '../../../types/api/storage';
 import {cn} from '../../../utils/cn';
+import {EMPTY_DATA_PLACEHOLDER} from '../../../utils/constants';
 
 import {StorageGroupsEmptyDataMessage} from './StorageGroupsEmptyDataMessage';
 import {STORAGE_GROUPS_COLUMNS_IDS, STORAGE_GROUPS_COLUMNS_WIDTH_LS_KEY} from './columns/constants';
@@ -64,10 +65,11 @@ export const PaginatedStorageGroupsTable = ({
     renderErrorMessage,
     initialEntitiesCount,
 }: PaginatedStorageGroupsTableProps) => {
+    const history = useHistory();
+    const getStorageGroupPath = useStorageGroupPath();
     const capabilitiesLoaded = useCapabilitiesLoaded();
-    const groupsHandlerAvailable = useStorageGroupsHandlerAvailable();
 
-    const fetchData = useGroupsGetter(groupsHandlerAvailable);
+    const fetchData = useGroupsGetter();
 
     const hasVDisksColumns = React.useMemo(() => {
         return columns.some((column) => columnsWithVDisks.has(column.name));
@@ -113,6 +115,13 @@ export const PaginatedStorageGroupsTable = ({
     return (
         <LoaderWrapper loading={!capabilitiesLoaded}>
             <ResizeablePaginatedTable
+                getKeyboardRowKey={(group) => group.GroupId}
+                getKeyboardRowLabel={(group) => group.GroupId?.toString() || EMPTY_DATA_PLACEHOLDER}
+                onKeyboardActivate={(group) => {
+                    if (group.GroupId !== undefined) {
+                        history.push(getStorageGroupPath(group.GroupId));
+                    }
+                }}
                 columnsWidthLSKey={STORAGE_GROUPS_COLUMNS_WIDTH_LS_KEY}
                 scrollContainerRef={scrollContainerRef}
                 columns={columns}

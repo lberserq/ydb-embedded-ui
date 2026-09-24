@@ -5,8 +5,30 @@ import {Popup} from '@gravity-ui/uikit';
 import debounce from 'lodash/debounce';
 
 import {YDB_POPOVER_CLASS_NAME} from '../../utils/constants';
+import {useEventHandler} from '../../utils/hooks/useEventHandler';
+
+import {getPopupScrollContainer} from './getPopupScrollContainer';
 
 const DEBOUNCE_TIMEOUT = 100;
+
+function useVisibleAnchor(anchorElement: HTMLElement | null, open: boolean) {
+    const [visibleAnchor, setVisibleAnchor] = React.useState<HTMLElement | null>(null);
+
+    React.useLayoutEffect(() => {
+        setVisibleAnchor(null);
+        if (!open || !anchorElement) {
+            return undefined;
+        }
+
+        const observer = new IntersectionObserver(([entry]) => {
+            setVisibleAnchor(entry.isIntersecting ? anchorElement : null);
+        });
+        observer.observe(anchorElement);
+        return () => observer.disconnect();
+    }, [anchorElement, open]);
+
+    return anchorElement !== null && visibleAnchor === anchorElement;
+}
 
 type HoverPopupProps = {
     children: React.ReactNode;
@@ -28,7 +50,7 @@ export const HoverPopup = ({
     anchorRef,
     onShowPopup,
     onHidePopup,
-    placement = ['top', 'bottom'],
+    placement = ['top', 'bottom', 'left', 'right'],
     contentClassName,
     delayClose = DEBOUNCE_TIMEOUT,
     delayOpen = DEBOUNCE_TIMEOUT,
@@ -41,22 +63,19 @@ export const HoverPopup = ({
 
     const reportedOpenRef = React.useRef(false);
 
-    const reportOpen = React.useCallback(
-        (nextOpen: boolean, force = false) => {
-            if (!force && reportedOpenRef.current === nextOpen) {
-                return;
-            }
+    const reportOpen = useEventHandler((nextOpen: boolean, force = false) => {
+        if (!force && reportedOpenRef.current === nextOpen) {
+            return;
+        }
 
-            reportedOpenRef.current = nextOpen;
+        reportedOpenRef.current = nextOpen;
 
-            if (nextOpen) {
-                onShowPopup?.();
-            } else {
-                onHidePopup?.();
-            }
-        },
-        [onShowPopup, onHidePopup],
-    );
+        if (nextOpen) {
+            onShowPopup?.();
+        } else {
+            onHidePopup?.();
+        }
+    });
 
     const debouncedHandleShowPopup = React.useMemo(
         () =>
@@ -79,6 +98,13 @@ export const HoverPopup = ({
             }, delayClose),
         [delayClose, reportOpen, hidePopup],
     );
+
+    React.useEffect(() => {
+        return () => {
+            debouncedHandleShowPopup.cancel();
+            debouncedHandleHidePopup.cancel();
+        };
+    }, [debouncedHandleShowPopup, debouncedHandleHidePopup]);
 
     const closePopup = React.useCallback(() => {
         debouncedHandleShowPopup.cancel();
@@ -124,9 +150,12 @@ export const HoverPopup = ({
     }, [closePopup]);
 
     const internalOpen = isPopupVisible || isPopupContentHovered || isFocused;
-    const open = internalOpen || showPopup;
+    const open = Boolean(internalOpen || showPopup);
 
     const anchorElement = anchorRef?.current || anchor.current;
+    // Clipping a paired disk must not clear the shared hover state via onHidePopup.
+    const isAnchorVisible = useVisibleAnchor(anchorElement, open);
+    const container = getPopupScrollContainer(anchorElement);
 
     return (
         <React.Fragment>
@@ -135,6 +164,9 @@ export const HoverPopup = ({
             </span>
             {anchorElement ? (
                 <Popup
+                    container={container}
+                    // Keep portal typography when the page uses a different font.
+                    floatingStyles={{fontFamily: 'var(--g-text-body-font-family)'}}
                     anchorElement={anchorElement}
                     onOpenChange={(_open, _event, reason) => {
                         if (reason === 'escape-key') {
@@ -142,9 +174,11 @@ export const HoverPopup = ({
                         }
                     }}
                     placement={placement}
+                    // Exiting popups must not expand the page when their anchors scroll offscreen.
+                    strategy="fixed"
                     returnFocus={false}
                     hasArrow
-                    open={open}
+                    open={open && isAnchorVisible}
                     // bigger offset for easier switching to neighbour nodes
                     // matches the default offset for popup with arrow out of a sense of beauty
                     offset={offset || {mainAxis: 12, crossAxis: 0}}

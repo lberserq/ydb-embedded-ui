@@ -1,3 +1,4 @@
+import {truncate} from 'lodash';
 import {z} from 'zod';
 
 import {YQLType} from '../types';
@@ -20,7 +21,13 @@ import type {
     TransactionMode,
 } from '../types/store/query';
 
+import {EMPTY_DATA_PLACEHOLDER} from './emptyDataPlaceholder';
 import {isAbortError, isAxiosResponse, isNetworkError, isResponseError} from './response';
+
+export function getQueryShortText(queryText: string | undefined) {
+    const text = queryText?.replace(/\s+/g, ' ').trim();
+    return text ? truncate(text, {length: 120, separator: ' '}) : EMPTY_DATA_PLACEHOLDER;
+}
 
 export const TRANSACTION_MODES = {
     serializable: 'serializable-read-write',
@@ -244,6 +251,61 @@ export function isQueryErrorResponse(data: unknown): data is ErrorResponse {
 
 export function isErrorResponse(data: unknown): data is ErrorResponse {
     return Boolean(data && typeof data === 'object' && 'issues' in data);
+}
+
+function hasIssueContent(data: ErrorResponse) {
+    return Boolean(data.error || data.issues?.length);
+}
+
+// The issues view walks this tree and renders these fields, so anything else would throw while drawing.
+function isIssueTree(value: unknown): boolean {
+    return (
+        Array.isArray(value) &&
+        value.every((issue) => {
+            if (!issue || typeof issue !== 'object' || Array.isArray(issue)) {
+                return false;
+            }
+            const {
+                message,
+                issue_code: issueCode,
+                issues,
+            } = issue as {
+                message?: unknown;
+                issue_code?: unknown;
+                issues?: unknown;
+            };
+            return (
+                (message === undefined || typeof message === 'string') &&
+                (issueCode === undefined || typeof issueCode === 'number') &&
+                (issues === undefined || issues === null || isIssueTree(issues))
+            );
+        })
+    );
+}
+
+function hasRenderableIssues(data: ErrorResponse) {
+    const message: unknown = data.error?.message;
+    return (
+        (message === undefined || typeof message === 'string') &&
+        (data.issues === undefined || data.issues === null || isIssueTree(data.issues))
+    );
+}
+
+export function parseIssuesData(raw: unknown): ErrorResponse | string | undefined {
+    if (typeof raw === 'string' && raw) {
+        try {
+            const parsed: unknown = JSON.parse(raw);
+            return isErrorResponse(parsed) && hasIssueContent(parsed) && hasRenderableIssues(parsed)
+                ? parsed
+                : undefined;
+        } catch {
+            return raw;
+        }
+    }
+    if (isErrorResponse(raw) && hasIssueContent(raw) && hasRenderableIssues(raw)) {
+        return raw;
+    }
+    return undefined;
 }
 
 // Although schema is set in request, if schema is not supported default schema for the version will be used

@@ -19,6 +19,7 @@ import type {GetLogsLink} from '../utils/logs';
 import type {GetMonitoringClusterLink, GetMonitoringLink} from '../utils/monitoring';
 
 export type IllustrationComponent = React.ComponentType<React.SVGProps<SVGSVGElement>>;
+export type CreateGraphLayoutWorker = () => Worker;
 
 export type IllustrationName =
     | 'InternalError'
@@ -50,9 +51,14 @@ export interface UIFactory<H extends string = CommonIssueCategory, T extends str
     renderEvents?: RenderEvents;
     renderMonitoring?: RenderMonitoring;
     renderNodeTooltipActions?: RenderNodeTooltipActions;
+    renderChatPanel?: RenderChatPanel;
     clusterOrDatabaseAccessError?: Partial<EmptyStateProps>;
 
+    /** Defaults to true. Undefined preserves the current value when configuring the UI. */
     enableMultiTabQueryEditor?: boolean;
+
+    /** Creates a fresh computation-graph layout worker for each layout run. */
+    createGraphLayoutWorker?: CreateGraphLayoutWorker;
 
     healthcheck: {
         issueCategories: ReadonlyArray<H>;
@@ -60,6 +66,11 @@ export interface UIFactory<H extends string = CommonIssueCategory, T extends str
         getHealthckechViewTitles: GetHealthcheckViewTitles<H>;
         getHealthcheckViewsOrder: GetHealthcheckViewsOrder<H>;
         renderAssistantAction?: RenderHealthcheckAssistantAction;
+        /**
+         * Renders after the drawer header and before Healthcheck content.
+         * Stays mounted while the drawer is open, independent of loading, error or issue state.
+         */
+        renderDrawerExtension?: () => React.ReactNode;
     };
     hasAccess: HasAccess;
     hideGrantAccess?: boolean;
@@ -197,6 +208,8 @@ export type RenderMonitoring = (props: {
 }) => React.ReactNode;
 
 export type RenderNodeTooltipActions = (props: {data?: PreparedStorageNode}) => React.ReactNode;
+
+export type RenderChatPanel = () => React.ReactNode;
 
 export type RenderHealthcheckAssistantAction = (
     props: HealthcheckAssistantActionProps,

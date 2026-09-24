@@ -1,13 +1,21 @@
 import React from 'react';
 
+import {useHistory} from 'react-router-dom';
+
+import {
+    getNodeHostLabel,
+    getNodeHostPath,
+} from '../../../components/NodeHostWrapper/NodeHostWrapper';
 import type {PaginatedTableData, RenderErrorMessage} from '../../../components/PaginatedTable';
 import {PAGINATED_TABLE_IDS, ResizeablePaginatedTable} from '../../../components/PaginatedTable';
+import {NODES_COLUMNS_IDS} from '../../../components/nodesColumns/constants';
 import type {NodesColumn} from '../../../components/nodesColumns/types';
 import {VISIBLE_ENTITIES} from '../../../store/reducers/storage/constants';
 import type {PreparedStorageNode, VisibleEntities} from '../../../store/reducers/storage/types';
 import type {NodesGroupByField} from '../../../types/api/nodes';
 import {cn} from '../../../utils/cn';
 import {NodesUptimeFilterValues, isUnavailableNode} from '../../../utils/nodes';
+import {STORAGE_NODES_DEFAULT_ROW_HEIGHT} from '../PaginatedStorageNodes/nodeExpertModeLayout';
 
 import {StorageNodesEmptyDataMessage} from './StorageNodesEmptyDataMessage';
 import {STORAGE_NODES_COLUMNS_WIDTH_LS_KEY} from './columns/constants';
@@ -39,6 +47,7 @@ interface PaginatedStorageNodesTableProps {
     scrollContainerRef: React.RefObject<HTMLElement>;
     renderErrorMessage: RenderErrorMessage;
     initialEntitiesCount?: number;
+    rowHeight?: number;
     onDataFetched?: (data: PaginatedTableData<PreparedStorageNode>) => void;
 }
 
@@ -56,8 +65,10 @@ export const PaginatedStorageNodesTable = ({
     scrollContainerRef,
     renderErrorMessage,
     initialEntitiesCount,
+    rowHeight = STORAGE_NODES_DEFAULT_ROW_HEIGHT,
     onDataFetched,
 }: PaginatedStorageNodesTableProps) => {
+    const history = useHistory();
     const tableFilters = React.useMemo(() => {
         return {
             searchValue,
@@ -99,11 +110,23 @@ export const PaginatedStorageNodesTable = ({
 
     return (
         <ResizeablePaginatedTable
+            getKeyboardRowKey={(node) => node.NodeId}
+            getKeyboardRowLabel={getNodeHostLabel}
+            onKeyboardActivate={(node) => {
+                const nodePath = getNodeHostPath(node, database);
+                if (nodePath) {
+                    history.push(nodePath);
+                }
+            }}
             columnsWidthLSKey={STORAGE_NODES_COLUMNS_WIDTH_LS_KEY}
             scrollContainerRef={scrollContainerRef}
             columns={columns}
             fetchData={getStorageNodes}
-            rowHeight={51}
+            rowHeight={
+                columns.some((column) => column.name === NODES_COLUMNS_IDS.PDisks)
+                    ? rowHeight
+                    : undefined
+            }
             initialEntitiesCount={initialEntitiesCount}
             renderErrorMessage={renderErrorMessage}
             renderEmptyDataMessage={renderEmptyDataMessage}

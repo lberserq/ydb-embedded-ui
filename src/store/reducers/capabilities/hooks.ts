@@ -81,10 +81,6 @@ export const useTracingLevelOptionAvailable = () => {
     return useGetFeatureVersion('/viewer/query') > 2;
 };
 
-export const useStorageGroupsHandlerAvailable = () => {
-    return useGetFeatureVersion('/storage/groups') > 2;
-};
-
 export const useStorageStatsAvailable = () => {
     return useGetFeatureVersion('/viewer/storage_stats') > 0;
 };
@@ -201,6 +197,15 @@ export const useAnalyzeOperationAvailable = () => {
     );
 
     return operationListVersion >= 2 && Boolean(analyzeLongRunningOperationEnabled);
+};
+
+export const useTabletDevUiSecurePath = () => {
+    const database = useDatabaseFromQuery();
+
+    return useTypedSelector((state) => {
+        const {data, isError} = selectDatabaseCapabilities(state, database);
+        return !isError && data?.Settings?.Features?.EnableTabletDevUiSecurePath === true;
+    });
 };
 
 export const useGraphShardExists = () => {

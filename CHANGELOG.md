@@ -1,5 +1,70 @@
 # Changelog
 
+## [22.0.0](https://github.com/ydb-platform/ydb-embedded-ui/compare/v21.1.0...v22.0.0) (2026-09-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* register chat panel through ui factory ([#4361](https://github.com/ydb-platform/ydb-embedded-ui/issues/4361))
+* **storage:** remove legacy storage api ([#4323](https://github.com/ydb-platform/ydb-embedded-ui/issues/4323))
+
+### Features
+
+* add database and cluster data tags ([#4300](https://github.com/ydb-platform/ydb-embedded-ui/issues/4300)) ([38b6856](https://github.com/ydb-platform/ydb-embedded-ui/commit/38b68563b4574fb7ab4718ddfd8b622752b00dc1))
+* clarify allocated storage groups in cluster overview ([#4311](https://github.com/ydb-platform/ydb-embedded-ui/issues/4311)) ([d461e9f](https://github.com/ydb-platform/ydb-embedded-ui/commit/d461e9f1f1a17b44cf460da3cfebde39a3640baa))
+* register chat panel through ui factory ([#4361](https://github.com/ydb-platform/ydb-embedded-ui/issues/4361)) ([33e8dd7](https://github.com/ydb-platform/ydb-embedded-ui/commit/33e8dd782639da6d7419cc498ebdd45ac992e3b7))
+
+
+### Bug Fixes
+
+* match nodes virtualization height to the pdisks column ([#4351](https://github.com/ydb-platform/ydb-embedded-ui/issues/4351)) ([4e03d76](https://github.com/ydb-platform/ydb-embedded-ui/commit/4e03d768da8677445845554dbd6804bcba200ef7))
+* preserve page scrolling over popups ([#4353](https://github.com/ydb-platform/ydb-embedded-ui/issues/4353)) ([7071af0](https://github.com/ydb-platform/ydb-embedded-ui/commit/7071af021bef9f92e2ad6b2c7707344877cc3b54))
+* preserve redux cache when updating url state ([#4349](https://github.com/ydb-platform/ydb-embedded-ui/issues/4349)) ([26f8c81](https://github.com/ydb-platform/ydb-embedded-ui/commit/26f8c81cd881ea57f190657fa374202a467c86d1))
+* **storage:** prevent disk popups from expanding the page ([#4342](https://github.com/ydb-platform/ydb-embedded-ui/issues/4342)) ([f967fa6](https://github.com/ydb-platform/ydb-embedded-ui/commit/f967fa6b167e57911898ebe35d7b1d15298d805e))
+
+
+### Code Refactoring
+
+* **storage:** remove legacy storage api ([#4323](https://github.com/ydb-platform/ydb-embedded-ui/issues/4323)) ([668a1b3](https://github.com/ydb-platform/ydb-embedded-ui/commit/668a1b33c2151aec04c4d572381cf8db7a0d8903))
+
+## [21.1.0](https://github.com/ydb-platform/ydb-embedded-ui/compare/v21.0.0...v21.1.0) (2026-09-10)
+
+
+### Features
+
+* add a stable healthcheck drawer extension ([#4324](https://github.com/ydb-platform/ydb-embedded-ui/issues/4324)) ([7e95f0d](https://github.com/ydb-platform/ydb-embedded-ui/commit/7e95f0d17d29833bd96804026a94a9009ad4f385))
+* enable query editor tabs by default ([#4320](https://github.com/ydb-platform/ydb-embedded-ui/issues/4320)) ([be85fd5](https://github.com/ydb-platform/ydb-embedded-ui/commit/be85fd579b50731e2b70fc631f1df03e3a410205))
+
+
+### Bug Fixes
+
+* align critical action confirmation dialogs ([#4306](https://github.com/ydb-platform/ydb-embedded-ui/issues/4306)) ([766531e](https://github.com/ydb-platform/ydb-embedded-ui/commit/766531ee7f86da034b77b89ad35b7ff597edb9e0))
+* **Header:** show loading for link to shared DB ([#4316](https://github.com/ydb-platform/ydb-embedded-ui/issues/4316)) ([bb0952a](https://github.com/ydb-platform/ydb-embedded-ui/commit/bb0952a77cfa8d0ff28c70503af9dc35a0a650e8))
+* prevent pdisk popups from opening without selection ([#4330](https://github.com/ydb-platform/ydb-embedded-ui/issues/4330)) ([fec1403](https://github.com/ydb-platform/ydb-embedded-ui/commit/fec1403fd02123257e26c27c1dbcba2ba516645c))
+
+## [21.0.0](https://github.com/ydb-platform/ydb-embedded-ui/compare/v20.5.0...v21.0.0) (2026-09-07)
+
+
+### ⚠ BREAKING CHANGES
+
+* **graph:** use new library with web workers ([#4253](https://github.com/ydb-platform/ydb-embedded-ui/issues/4253))
+
+### Features
+
+* **graph:** use new library with web workers ([#4253](https://github.com/ydb-platform/ydb-embedded-ui/issues/4253)) ([c88d663](https://github.com/ydb-platform/ydb-embedded-ui/commit/c88d6632674afb41eec2ff0018b862dc75e7238a))
+
+## [20.5.0](https://github.com/ydb-platform/ydb-embedded-ui/compare/v20.4.0...v20.5.0) (2026-09-03)
+
+
+### Features
+
+* **TopicInfo:** show topic autopartitioning settings ([#4284](https://github.com/ydb-platform/ydb-embedded-ui/issues/4284)) ([0610f0f](https://github.com/ydb-platform/ydb-embedded-ui/commit/0610f0f5fd9e3c90df95900f46ff89a67e47d879))
+
+
+### Bug Fixes
+
+* if no cluster name redirect to root ([#4301](https://github.com/ydb-platform/ydb-embedded-ui/issues/4301)) ([7319000](https://github.com/ydb-platform/ydb-embedded-ui/commit/7319000950012ee3b4c7f4e64ae2d4addb0d901d))
+
 ## [20.4.0](https://github.com/ydb-platform/ydb-embedded-ui/compare/v20.3.0...v20.4.0) (2026-09-02)
 
 
